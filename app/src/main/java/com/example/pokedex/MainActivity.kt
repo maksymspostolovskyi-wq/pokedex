@@ -19,9 +19,7 @@ import com.example.pokedex.model.samplePokemonList
 import com.example.pokedex.ui.screen.PokemonMainScreen
 import com.example.pokedex.ui.theme.PokedexTheme
 
-//Коротко, фільтри додані, користувач натискає на тип і фільтр оновляє колонку, додано ще тип без покемона, емптістейт, для переіврки відсутності покемона
-//ШІ допоміг оформити папки правильно, без помилок(виникало багато помилок бо забував щось додати чи імпортувати)
-// також поміг відфільтрувати розташування ід покемона та коло навкого самого покемона
+//ШІ поміг дуже з написання коду PokemonViewModel
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,7 +66,6 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize()
                 ) { innerPadding ->
                     PokemonMainScreen(
-                        pokemonList = samplePokemonList,
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
