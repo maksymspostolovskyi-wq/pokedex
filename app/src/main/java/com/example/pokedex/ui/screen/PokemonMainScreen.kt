@@ -13,6 +13,7 @@ import com.example.pokedex.ui.filter.TypeFilterRow
 
 @Composable
 fun PokemonMainScreen(
+    onPokemonClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: PokemonViewModel = viewModel()
 ) {
@@ -33,7 +34,10 @@ fun PokemonMainScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(uiState.filteredList) { pokemon ->
-                    PokemonCard(pokemon = pokemon)
+                    PokemonCard(
+                        pokemon = pokemon,
+                        onPokemonClick = onPokemonClick
+                    )
                 }
             }
         }

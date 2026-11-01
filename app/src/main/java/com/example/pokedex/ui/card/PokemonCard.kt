@@ -17,17 +17,19 @@ import coil.compose.AsyncImage
 import com.example.pokedex.model.Pokemon
 import com.example.pokedex.model.getTypeBackgroundColor
 import com.example.pokedex.model.getTypeTextColor
+import androidx.compose.foundation.clickable
 
 @Composable
 fun PokemonCard(
     pokemon: Pokemon,
+    onPokemonClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val primaryType = pokemon.types.firstOrNull() ?: "Normal"
     val circleBgColor = getTypeBackgroundColor(primaryType)
 
     Card(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().clickable { onPokemonClick(pokemon.id) },
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -48,7 +50,6 @@ fun PokemonCard(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Ось цей круг переробляв ШІ, ну і він трохи поміг вирівняти мені всю інформацію, в мене накладалась вона
                 Box(
                     modifier = Modifier
                         .size(80.dp)
