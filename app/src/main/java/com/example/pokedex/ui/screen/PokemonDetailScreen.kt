@@ -15,11 +15,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pokedex.model.Pokemon
 import com.example.pokedex.model.samplePokemonList
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PokemonDetailScreen(
     pokemonId: Int,
+    isImperial: Boolean,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -54,6 +56,20 @@ fun PokemonDetailScreen(
                 )
             }
         } else {
+            val heightText = if (isImperial) {
+                val feet = pokemon.height * 3.28084
+                String.format(Locale.US, "%.2f ft", feet)
+            } else {
+                "${pokemon.height} m"
+            }
+
+            val weightText = if (isImperial) {
+                val lbs = pokemon.weight * 2.20462
+                String.format(Locale.US, "%.2f lbs", lbs)
+            } else {
+                "${pokemon.weight} kg"
+            }
+
             Column(
                 modifier = modifier
                     .fillMaxSize()
@@ -96,8 +112,8 @@ fun PokemonDetailScreen(
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(text = "ID: #${pokemon.id}", fontSize = 16.sp)
-                        Text(text = "Height: ${pokemon.height} m", fontSize = 16.sp)
-                        Text(text = "Weight: ${pokemon.weight} kg", fontSize = 16.sp)
+                        Text(text = "Height: $heightText", fontSize = 16.sp)
+                        Text(text = "Weight: $weightText", fontSize = 16.sp)
                     }
                 }
             }
