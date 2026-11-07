@@ -66,6 +66,7 @@ class MainActivity : ComponentActivity() {
                             PokemonDetailScreen(
                                 pokemonId = pokemonId,
                                 isImperial = isImperial,
+                                viewModel = viewModel,
                                 onBackClick = { navController.popBackStack() }
                             )
                         }

@@ -8,13 +8,15 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.pokedex.model.Pokemon
-import com.example.pokedex.model.samplePokemonList
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -22,27 +24,53 @@ import java.util.Locale
 fun PokemonDetailScreen(
     pokemonId: Int,
     isImperial: Boolean,
+    viewModel: PokemonViewModel,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val pokemon: Pokemon? = samplePokemonList.find { it.id == pokemonId }
+    val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(pokemonId) {
+        viewModel.loadPokemonDetail(pokemonId)
+    }
+
+    val pokemon = uiState.selectedPokemonDetail
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = pokemon?.name ?: "Details") },
+                title = {
+                    Text(
+                        text = pokemon?.name ?: "Details",
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = "Back",
+                            tint = Color.White
                         )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color(0xFFDC0A2D)
+                )
             )
         }
     ) { innerPadding ->
-        if (pokemon == null) {
+        if (uiState.isDetailLoading) {
+            Box(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(color = Color(0xFFDC0A2D))
+            }
+        } else if (pokemon == null) {
             Box(
                 modifier = modifier
                     .fillMaxSize()
