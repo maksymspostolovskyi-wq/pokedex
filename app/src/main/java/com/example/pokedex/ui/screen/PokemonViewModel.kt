@@ -18,6 +18,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.SerializationException
+import retrofit2.HttpException
+import java.io.IOException
+import java.net.UnknownHostException
 
 data class PokemonUiState(
     val pokemonList: List<Pokemon> = emptyList(),
@@ -80,14 +84,26 @@ class PokemonViewModel(application: Application) : AndroidViewModel(application)
                         pokemonList = fetchedPokemon,
                         filteredList = applyFilter(fetchedPokemon, it.selectedType),
                         availableTypes = allStandardTypes,
-                        isLoading = false
+                        isLoading = false,
+                        error = null
                     )
                 }
             } catch (e: Exception) {
+                val userFriendlyMessage = when (e) {
+                    is UnknownHostException, is IOException ->
+                        "Відсутнє підключення до Інтернету. Перевірте авіарежим або Wi-Fi."
+                    is HttpException ->
+                        "Помилка сервера (Код ${e.code()}). Спробуйте пізніше."
+                    is SerializationException, is IllegalArgumentException ->
+                        "Отримано дані у невідповідному форматі."
+                    else ->
+                        "Невідома помилка мережі: ${e.localizedMessage}"
+                }
+
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error = e.localizedMessage ?: "Failed to load data",
+                        error = userFriendlyMessage,
                         availableTypes = allStandardTypes
                     )
                 }
